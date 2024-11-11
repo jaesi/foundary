@@ -10,14 +10,18 @@
     </div>
     
     <a href="{{ url_for('main.index') }}">다시 생성하기</a>
+    
+    <!-- marked.js 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <script>
         // 타이핑 효과 적용 함수
         function typeEffect(element, text, speed) {
+            element.innerHTML = ""; // 초기화
             let i = 0;
             function type() {
                 if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
+                    element.innerHTML += text[i];
                     i++;
                     setTimeout(type, speed); // 지정된 속도에 따라 다음 글자 표시
                 }
@@ -27,9 +31,18 @@
 
         // DOM 로드 후 타이핑 효과 시작
         document.addEventListener("DOMContentLoaded", function() {
-            const descriptionText = `{{ description | e }}`; // 서버에서 전달된 description
+            // 서버에서 전달된 description 텍스트를 Markdown 형식으로 변환
+            const markdownText = `{{ description | safe }}`; // 서버에서 전달된 Markdown 텍스트
+            const htmlDescription = marked.parse(markdownText); // Markdown을 HTML로 변환
+            console.log(htmlDescription); // 확인용
+
+            // HTML에서 텍스트만 추출하여 타이핑 효과 적용
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = htmlDescription;
+            const plainText = tempDiv.innerText || tempDiv.textContent; // 순수 텍스트 추출
+
             const typingElement = document.getElementById("typing-effect");
-            typeEffect(typingElement, descriptionText, 50); // 속도를 조정하고 시작 (50ms)
+            typeEffect(typingElement, plainText, 10); // 타이핑 효과 시작
         });
     </script>
 {% endblock %}

@@ -86,7 +86,7 @@ def describe_furniture(image_url):
         4. 추가 요소: 선반이나 서랍 같은 기타 부품이 있다면, 해당 부품의 재료, 색상, 치수, 두께.
 
         묘사가 정확하고 상세하며 포괄적이어야, 도면이 가구의 모든 필수 특성을 반영할 수 있습니다.
-        이 모든 양식을 HTML로 작성해주세요. ``html을 제외해주세요.
+
         '''
 
         response = openai.chat.completions.create(
@@ -106,10 +106,12 @@ def describe_furniture(image_url):
                     ],
                 }
             ],
-            max_tokens=300,
+            max_tokens=500,
         )
-
-        return response.choices[0].message.content
+        # ```html과 ```제거
+        content = response.choices[0].message.content.replace("```html", "").replace("```", "")
+        print(content)
+        return content
 
     except Exception as e:
         raise Exception(f"설명 생성 실패: {e}")
@@ -117,7 +119,7 @@ def describe_furniture(image_url):
 
 # Vision API만 TEST
 if __name__ == "__main__":
-    image_path = "app/static/images/output/0b475f64bedc2f30f6aca4e9dd26d1b3_output.png"
+    image_path = "app/static/images/output/0e083918d5a64687e1d1deffb182b78f_output.png"
     image_data = image_to_base64(image_path)
     description = describe_furniture(image_data)
     print(description)

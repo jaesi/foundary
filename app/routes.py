@@ -56,7 +56,7 @@ def index():
             output_filename = f"{os.path.splitext(filename)[0]}_output.png"
             output_path = os.path.join('app', 'static', 'images', 'output', output_filename)
 
-            try:
+            try: # 결과 탭
                 if action == 'generate':
                     # Get the style set folder 
                     style_dir = os.path.join('00_ref', style_set)
